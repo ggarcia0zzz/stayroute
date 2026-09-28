@@ -51,7 +51,8 @@ erDiagram
     USERS ||--o{ PROPERTY : owns
     USERS ||--o{ RESERVATION : makes
     PROPERTY ||--o{ ROOM_TYPE : has
-    PROPERTY }o--o{ AMENITY : offers
+    PROPERTY ||--o{ PROPERTY_AMENITY : offers
+    AMENITY ||--o{ PROPERTY_AMENITY : listed_in
     ROOM_TYPE ||--o{ ROOM : contains
     ROOM_TYPE ||--o{ SEASONAL_PRICE : has
     ROOM ||--o{ RESERVATION : booked_in
@@ -80,13 +81,13 @@ erDiagram
         bigint id PK
         varchar name
     }
-    PROPERTY_AMENITY{         
-        bigint id PK         
-        bigint property_id FK         
-        bigint amenity_id FK         
-        boolean is_free         
-        decimal extra_cost         
-        varchar details     
+    PROPERTY_AMENITY {
+        bigint id PK
+        bigint property_id FK
+        bigint amenity_id FK
+        boolean is_free
+        decimal extra_cost
+        varchar details
     }
     ROOM_TYPE {
         bigint id PK
@@ -133,6 +134,25 @@ erDiagram
         int rating
         text comment
     }
+```
+
+## Estructura del proyecto
+
+El código está organizado **por módulos funcionales** (feature packages) en lugar de por capas técnicas:
+
+```
+src/main/java/com/netbooks/
+├── config/          # Seguridad, OpenAPI, correo
+├── security/        # JWT, filtros, UserDetailsService
+├── common/          # Excepciones, DTOs y entidades base
+├── user/            # Usuarios y roles
+├── auth/            # Registro y login
+├── property/        # Hostales y comodidades
+├── room/            # Tipos de habitación, habitaciones y precios
+├── reservation/     # Reservas y disponibilidad
+├── payment/         # Pagos
+├── review/          # Reseñas
+└── notification/    # Correos y eventos
 ```
 
 ## Estructura del proyecto
