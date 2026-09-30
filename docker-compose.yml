@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: reservas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: reservas_db
+      POSTGRES_USER: reservas
+      POSTGRES_PASSWORD: reservas
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reservas -d reservas_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: reservas-app
+    profiles: ["app"]          # solo se levanta si lo pides con --profile app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/reservas_db
+      DB_USER: reservas
+      DB_PASSWORD: reservas
+      JWT_SECRET: cambia-este-secreto-por-uno-largo-de-al-menos-32-caracteres
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:

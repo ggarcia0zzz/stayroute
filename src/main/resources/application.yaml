@@ -1,3 +1,37 @@
 spring:
   application:
-    name: stayroute
+    name: reservas
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/reservas_db}
+    username: ${DB_USER:reservas}
+    password: ${DB_PASSWORD:reservas}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway crea las tablas; Hibernate solo verifica
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: America/Bogota
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# Se usará más adelante para JWT (no subas un secreto real al repositorio)
+app:
+  jwt:
+    secret: ${JWT_SECRET:cambia-este-secreto-por-uno-largo-de-al-menos-32-caracteres}
+    expiration-minutes: 60
